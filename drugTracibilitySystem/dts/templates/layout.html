@@ -53,6 +53,13 @@
 					<span class="text">Trasanctions</span>
 				</a> 
 			</li>
+
+			<li  class="{% if request.path == '/dts/administrators' %} active {% endif %}">
+				<a href="{%url 'administrators'%}" class="nav-link">
+					<i class='bx bx-user'></i>
+					<span class="text">Administrators</span>
+				</a> 
+			</li>
 		</ul>
 
 	</section>
@@ -100,6 +107,35 @@
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
+
+	<script>
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("dataTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) { // Start from index 1 to skip header row
+                td = tr[i].getElementsByTagName("td");
+                for (var j = 0; j < td.length; j++) {
+                    var cell = td[j];
+                    if (cell) {
+                        txtValue = cell.textContent || cell.innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                            break; // Show the row if any cell matches
+                        } else {
+                            tr[i].style.display = "none"; // Hide the row if no cell matches
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+    </script>
 
 
 	<script src="{% static 'js/script.js'%}"></script>

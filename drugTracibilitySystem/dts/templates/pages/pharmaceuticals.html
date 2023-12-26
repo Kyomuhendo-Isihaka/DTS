@@ -2,36 +2,39 @@
 
 {%block content%}
 Pharmaceuticals
-<a href="#" class="p-2 float-end btn-primary nav-link" data-toggle="modal" data-target="#addhealthcenter">Add Health
-    Center</a>
-
-
-
-
+<a href="#" class="p-2 float-end btn-primary nav-link" data-toggle="modal" data-target="#addnewdrug">Add New
+    Drug</a>
 
 <!-- add health center popup -->
-<div class="modal fade" id="addhealthcenter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+<div class="modal fade" id="addnewdrug" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New Health Center</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add New Drug</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <h4 class="text-center">Hello world</h4>
-                    <form action="{%url 'healthcenters'%}" class="form-group" method="post">
+                   
+                    <form action="{%url 'pharmaceuticals'%}" class="form-group" method="post">
                         {% csrf_token %}
-                        <label for="">Health Center Name</label>
-                        <input type="text" class="form-control mb-2" name="healthcentername" required autocomplete="off">
+                        
+                        <label for="">Drug Name</label>
+                        <input type="text" class="form-control mb-2" name="drug_name" required autocomplete="off">
+                       
+                        <label for="">Batch Number</label>
+                        <input type="text" class="form-control mb-2" name="batch_num" required autocomplete="off">
 
-                        <label for="">District</label>
-                        <input type="text" class="form-control mb-2" name="district" required autocomplete="off">
-                        <!-- <select name="countries" class="w-100 p-2 mb-2" id="countries"></select> -->
-                        <label for="">Village</label>
-                        <input type="text" class="form-control mb-2" name="village" required autocomplete="off">
+                        <label for="">Drug Description</label>
+                        <input type="text" class="form-control mb-2" name="drug_description" required autocomplete="off">
+
+                        <label for="">Expiration Date</label>
+                        <input type="date" class="form-control mb-2" name="expirationDate" required autocomplete="off">
+
+                        <label for="">Quantity</label>
+                        <input type="number" class="form-control mb-2" name="drug_quantity" required autocomplete="off">
 
                         <div class="float-end">
                             <button type="submit" class="p-2 btn-primary">Save</button>
@@ -51,6 +54,124 @@ Pharmaceuticals
     </div>
 </div>
 
+<div class="container-fluid mt-5 ">
+    <form class="my-2">
+        <input type="text" name="searchKeyword" id="searchInput" onkeyup="searchTable()"
+            placeholder="Search for a drug" class="w-100 p-2">
+
+    </form>
+
+    <table class="table-bordered table table-striped white_bg" id="dataTable">
+        <thead>
+            <tr>
+                <th>Batch Number</th>
+                <th>Drug Name</th>
+                <th>Drug Quantity</th>
+                <th>Expiration Data</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if drugs %}
+
+            {% for drug in drugs %}
+            <tr>
+                <td>{{drug.BatchNumber}}</td>
+                <td>{{drug.DrugName}}</td>
+                <td>{{drug.Quantity}}</td>
+                <td>{{drug.ExpirationDate}}</td>
+                <td>
+                    <div class="d-flex">
+                       <a href="#" class="btn-dark p-3 mx-1" data-toggle="modal" data-target="#viewdrug{{drug.DrugID}}"><i class="bx bx-low-vision"></i></a>
+                       <a href="#" class="btn-warning p-3 mx-1"  data-toggle="modal" data-target="#editdrug{{drug.DrugID}}"><i class="bx bx-pen"></i></a>
+                       <a href="{%url 'deletePharmaceutical' pk=drug.DrugID%}" class="btn-danger p-3 mx-1" onclick="return confirm('Are you sure you want to delete this Drug?')"><i class="bx bx-trash"></i></a>
+                    </div>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No Drugs available.</td>
+            </tr>
+            {% endif %}
+
+        </tbody>
+    </table>
+</div>
+
+<!-- edit drug information -->
+{%for drug in drugs%}
+<div class="modal fade" id="editdrug{{drug.DrugID}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Drug</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                   
+                    <form action="{%url 'editpharmaceutical' pk=drug.DrugID %}" class="form-group" method="post">
+                        {% csrf_token %}
+                        
+                        <label for="">Drug Name</label>
+                        <input type="text" class="form-control mb-2" value="{{drug.DrugName}}" name="drug_name" required autocomplete="off">
+                       
+                        <label for="">Batch Number</label>
+                        <input type="text" class="form-control mb-2" value="{{drug.BatchNumber}}" name="batch_num" required autocomplete="off">
+
+                        <label for="">Drug Description</label>
+                        <input type="text" class="form-control mb-2" value="{{drug.DrugDescription}}" name="drug_description" required autocomplete="off">
+
+                        <label for="">Quantity</label>
+                        <input type="number" class="form-control mb-2" value="{{drug.Quantity}}" name="drug_quantity" required autocomplete="off">
+
+                        <div class="float-end">
+                            <button type="submit" class="p-2 btn-primary">Save</button>
+
+                            <button type="button" class="p-2 btn-secondary" data-dismiss="modal">Cancel</button>
+                            
+                        </div>
+    
+                    </form>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewdrug{{drug.DrugID}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLabel">{{drug.DrugName}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                   <h5><b>Expiration Date:</b> <small>{{drug.ExpirationDate}}</small> </h5>
+                   <h5><b>Quantity:</b> <small>{{drug.Quantity}}</small> </h5>
+                   <h5><b>Drug Description:</b><br> <small>{{drug.DrugDescription}}</small> </h5>
+                   
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+{%endfor%}
 
 
 {%endblock%}

@@ -5,9 +5,14 @@ Health centers
 <a href="#" class="p-2 float-end btn-primary nav-link" data-toggle="modal" data-target="#addhealthcenter">Add Health
     Center</a>
 
-{{msg}}
+
 <div class="container-fluid mt-5 ">
-    <table class="table-bordered table table-striped white_bg">
+    <form class="my-2">
+        <input type="text" name="searchKeyword" id="searchInput" onkeyup="searchTable()"
+            placeholder="Search for a Health center" class="w-100 p-2">
+
+    </form>
+    <table class="table-bordered table table-striped white_bg" id="dataTable">
         <thead>
             <tr>
                 <th>Health Center</th>
@@ -26,7 +31,7 @@ Health centers
                 <td>{{ h.village }}</td>
                 <td>
                     <div class="d-flex">
-                        <a href="{% url 'healthcenter' pk=h.id%}" class="nav-link text-light btn-primary mx-2"><i class="bx bx-low-vision">View</i></a>
+                        <a href="{% url 'healthcenter' pk=h.id%}" class="nav-link text-light btn-dark mx-2"><i class="bx bx-low-vision">View</i></a>
                         <a href="#" class="nav-link text-warning btn-primary mx-2"><i class="bx bx-pen" data-toggle="modal" data-target="#edithealthcenter{{h.id}}">Edit</i></a>
                     </div>
                     
@@ -58,7 +63,7 @@ Health centers
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <h4 class="text-center">Hello world</h4>
+                   
                     <form action="{%url 'healthcenters'%}" class="form-group" method="post">
                         {% csrf_token %}
                         <label for="">Health Center Name</label>
